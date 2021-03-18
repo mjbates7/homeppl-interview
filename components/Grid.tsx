@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { GridColumnItem } from '../types';
 
 const Grid: FC = ({ children }) => {
-  return <div className="grid grid-cols-12 gap-4 border border-gray-500 divide-x divide-gray-500">{children}</div>;
+  return <div className="grid grid-cols-12 border border-gray-500 divide-x divide-gray-500">{children}</div>;
 };
 
 type GridColumnProps = {
@@ -12,7 +12,7 @@ type GridColumnProps = {
 
 const GridColumn = ({ col, removeColumn }: GridColumnProps) => {
   return (
-    <div className={`relative h-24 col-span-${col.columnWidth} pt-6 pl-4`}>
+    <div className={`relative h-24 col-span-${col.columnWidth} pt-6 px-4`}>
       <div className="absolute top-0 right-0 z-20 hover:bg-gray-100">
         <button className="px-2" onClick={() => removeColumn(col.id)}>
           &times; remove
