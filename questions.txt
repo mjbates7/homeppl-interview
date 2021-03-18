@@ -1,0 +1,113 @@
+1. How would we be able to add a new type of column, like a menuColumn, while still having it
+behave the same as a column?
+
+We could structure it something like the following and then when we parse in the JSON, we could then switch components based on the 'columnType'
+
+{
+	id: '9008ab5d-2850-4199-8c93-94ef8a92022f',
+	columnWidth: 6,
+  columnType: 'menuColumn',
+	data: {
+	  text: 'Some content here 1',
+	},
+}
+
+pseudo component factory:
+
+switch(column.columnType) {
+  case 'menuColumn':
+    return createMenuComponent(column);
+  case 'columnX':
+    return createSomethingElseComponent(column);
+  default:
+    return createColumnComponent(column);
+}
+
+------------------------------------------------------------------------------------------------------------------------
+2. How would we be able to support multiple types of content inside a column, besides text?
+Such as images, video’s, etc.
+
+I had already started to plan out how I thought this could be achieved in my data model by adding a "data" object to each column. This would allow for you to add different types of content For example:
+
+{
+	id: '9008ab5d-2850-4199-8c93-94ef8a92022f',
+	columnWidth: 6,
+	data: {
+	  text: 'Some content here 1',
+	},
+}
+
+This could be enhanced by something similar:
+
+{
+    id: '9008ab5d-2850-4199-8c93-94ef8a92022f',
+    columnWidth: 6,
+    data: {
+      type: 'image'
+      config: {
+        url: 'path/to/image.png',
+        width: 400,
+        height: 200
+      }
+    },
+}
+
+or
+
+{
+    id: '9008ab5d-2850-4199-8c93-94ef8a92022f',
+    columnWidth: 6,
+    data: {
+      type: 'video'
+      config: {
+        src: 'https://www.youtube.com/{videoId}',
+      }
+    },
+}
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------
+3. If the grid size (12) is not fixed but instead is different for each grid created, what would need
+to change to support that? How can we ensure that columns added do not appear smaller on
+one grid (12 width) from the other grid (24 width) when we add them?
+
+
+Currently I have a constant which defines maximum columns. This could be part of the response JSON which defines your grid. For example:
+
+{
+	grid: {
+		columns: 24
+	},
+	columns: [
+		{
+			id: '9008ab5d-2850-4199-8c93-94ef8a92022f',
+			columnWidth: 12,
+			data: {
+				type: 'video'
+				config: {
+					src: 'https://www.youtube.com/{videoId}',
+				}
+			},
+		},
+		{
+			id: '9008ab5d-2850-4199-8c93-283829fc0292',
+			columnWidth: 12,
+			data: {
+				type: 'image'
+				config: {
+					url: 'path/to/image.png',
+					width: 400,
+					height: 200
+				}
+			},
+		}
+	]
+
+}
+
+When we calculate the widths, we would pass in the new "columns" width (24) from the response object to the calcuation.  
+When it does the calculation it uses the new width (24) to calculate the column widths required and to keep the columns in perspective - ie from 6 to 12
+
+
